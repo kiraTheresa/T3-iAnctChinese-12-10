@@ -89,12 +89,15 @@ const authenticatedRequest = async (url, options = {}) => {
     body = { ...body, userId };
   }
 
-  console.log('API 请求:', {
-    url: finalUrl,
-    method: options.method || 'GET',
-    hasUserId: !!userId,
-    hasToken: !!token
-  });
+  // 生产环境移除日志
+  if (import.meta.env.DEV) {
+    console.log('API 请求:', {
+      url: finalUrl,
+      method: options.method || 'GET',
+      hasUserId: !!userId,
+      hasToken: !!token
+    });
+  }
 
   return request(finalUrl, {
     ...options,
