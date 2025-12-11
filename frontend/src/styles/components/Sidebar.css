@@ -150,6 +150,51 @@
   display: none;
 }
 
+/* 子菜单样式 */
+.sidebar-subnav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: rgba(0,0,0,0.02);
+  transition: all 0.3s ease;
+}
+
+.sidebar-subnav-item {
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-subnav-link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 16px 8px 32px;
+  border: none;
+  background-color: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.sidebar-subnav-link:hover {
+  background-color: rgba(0,0,0,0.04);
+  color: var(--text-color);
+}
+
+.sidebar-subnav-item.active .sidebar-subnav-link {
+  background-color: rgba(31, 142, 241, 0.1);
+  color: var(--primary);
+}
+
+/* 展开箭头样式 */
+.nav-item-arrow.expanded {
+  transform: rotate(90deg);
+  transition: transform 0.2s ease;
+}
+
 /* 滚动条样式 */
 .sidebar::-webkit-scrollbar {
   width: 6px;

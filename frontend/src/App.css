@@ -228,17 +228,12 @@ button:focus-visible {
 }
 
 .main-content {
-  margin-left: 200px; /* 侧边栏宽度 */
   flex: 1;
   padding: 24px;
   background-color: var(--bg-color);
   min-height: calc(100vh - 60px);
-  transition: margin-left 0.3s ease;
-}
-
-/* 侧边栏折叠时调整主内容区域 */
-.sidebar.collapsed ~ .main-content {
-  margin-left: 60px;
+  overflow: hidden;
+  overflow-y: auto;
 }
 
 /* 响应式设计 */

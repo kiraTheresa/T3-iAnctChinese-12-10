@@ -10,19 +10,38 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [expandedMenu, setExpandedMenu] = useState(null);
+
+  // 模拟项目数据
+  const mockProjects = [
+    { id: 1, name: '项目1', path: '/project/1' },
+    { id: 2, name: '项目2', path: '/project/2' },
+    { id: 3, name: '项目3', path: '/project/3' }
+  ];
 
   // 导航菜单数据
   const navItems = [
-    { name: 'dashboard', label: t('dashboard'), path: '/dashboard' },
-    { name: 'projects', label: t('projects'), path: '/dashboard' },
-    { name: 'visualization', label: t('visualization'), path: '/visualization' },
-    { name: 'profile', label: t('profile'), path: '/profile' },
-    { name: 'settings', label: t('settings'), path: '/settings' }
+    { name: 'dashboard', label: '仪表盘', path: '/dashboard' },
+    { 
+      name: 'projects', 
+      label: '项目', 
+      path: '/projects',
+      hasChildren: true,
+      children: mockProjects
+    },
+    { name: 'visualization', label: '可视化', path: '/visualization' },
+    { name: 'profile', label: '个人资料', path: '/profile' },
+    { name: 'settings', label: '设置', path: '/settings' }
   ];
 
   // 检查当前页面是否匹配导航项
   const isActive = (path) => {
-    return location.pathname.startsWith(path);
+    return location.pathname === path;
+  };
+
+  // 检查子菜单是否有激活项
+  const hasActiveChild = (children) => {
+    return children.some(child => location.pathname.startsWith(child.path));
   };
 
   const handleNavigation = (path) => {
@@ -33,6 +52,10 @@ const Sidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
 
+  const toggleSubMenu = (menuName) => {
+    setExpandedMenu(expandedMenu === menuName ? null : menuName);
+  };
+
   return (
     <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
       {/* 侧边栏头部 */}
@@ -41,12 +64,12 @@ const Sidebar = () => {
           type="button" 
           className="sidebar-toggle" 
           onClick={toggleSidebar}
-          aria-label={isCollapsed ? t('expand_sidebar') : t('collapse_sidebar')}
+          aria-label={isCollapsed ? '展开侧边栏' : '折叠侧边栏'}
         >
-          <i data-feather={isCollapsed ? 'chevron-right' : 'chevron-left'}></i>
+          <span className="toggle-icon">{isCollapsed ? '▶' : '◀'}</span>
         </button>
         {!isCollapsed && (
-          <div className="sidebar-title">{t('sidebar_title')}</div>
+          <div className="sidebar-title">项目管理</div>
         )}
       </div>
 
@@ -56,16 +79,49 @@ const Sidebar = () => {
           {navItems.map((item) => (
             <li 
               key={item.name} 
-              className={`sidebar-nav-item ${isActive(item.path) ? 'active' : ''}`}
+              className={`sidebar-nav-item ${isActive(item.path) || (item.hasChildren && hasActiveChild(item.children)) ? 'active' : ''}`}
             >
               <button 
                 type="button" 
                 className="sidebar-nav-link"
-                onClick={() => handleNavigation(item.path)}
+                onClick={() => {
+                  if (item.hasChildren) {
+                    toggleSubMenu(item.name);
+                  } else {
+                    handleNavigation(item.path);
+                  }
+                }}
               >
-                <i data-feather="chevron-right" className="nav-item-arrow"></i>
+                {item.hasChildren ? (
+                  <span className={`nav-item-arrow ${expandedMenu === item.name ? 'expanded' : ''}`}>
+                    {expandedMenu === item.name ? '▼' : '▶'}
+                  </span>
+                ) : (
+                  <span className="nav-item-arrow">•</span>
+                )}
                 <span className="nav-item-label">{item.label}</span>
               </button>
+              
+              {/* 子菜单 */}
+              {item.hasChildren && expandedMenu === item.name && !isCollapsed && (
+                <ul className="sidebar-subnav-list">
+                  {item.children.map((child) => (
+                    <li 
+                      key={child.id} 
+                      className={`sidebar-subnav-item ${isActive(child.path) ? 'active' : ''}`}
+                    >
+                      <button 
+                        type="button" 
+                        className="sidebar-subnav-link"
+                        onClick={() => handleNavigation(child.path)}
+                      >
+                        <span className="nav-item-arrow">•</span>
+                        <span className="nav-item-label">{child.name}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
         </ul>
@@ -76,7 +132,7 @@ const Sidebar = () => {
         <div className="sidebar-footer">
           <div className="sidebar-user-info">
             <div className="sidebar-user-name">{user.username}</div>
-            <div className="sidebar-user-role">{user.role || t('user')}</div>
+            <div className="sidebar-user-role">{user.role || '用户'}</div>
           </div>
         </div>
       )}

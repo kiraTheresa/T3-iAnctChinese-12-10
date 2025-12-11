@@ -64,11 +64,11 @@ const Header = ({ showEditorButtons = false, onSaveDocument, onBackToProject, on
             </>
           ) : (
             <>
-              <button className="header-button" onClick={onShowUserProfile}>
-                {t('user_info')}
+              <button className="header-button" onClick={() => navigate('/login')}>
+                {t('login')}
               </button>
-              <button className="header-button logout-button" onClick={handleLogout}>
-                {t('logout')}
+              <button className="header-button" onClick={() => navigate('/register')}>
+                {t('register')}
               </button>
             </>
           )}
