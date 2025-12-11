@@ -1,4 +1,5 @@
 backend/server/user/.env
+backend/server/venv/
 
 # Dependencies
 node_modules/
