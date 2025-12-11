@@ -1,3 +1,5 @@
+backend/server/user/.env
+
 # Dependencies
 node_modules/
 python_modules/
