@@ -1,11 +1,14 @@
 // src/components/editor/ClassicalAnalysis.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { t } from '../../utils/language';
 import { aiService } from '../../services/aiService';
 import Modal from '../common/Modal';
 import '../../styles/components/ClassicalAnalysis.css';
 
 const ClassicalAnalysis = ({ content }) => {
+  // localStorage键名常量
+  const QA_HISTORY_KEY = 'classical_analysis_qa_history';
+  
   const [analysisResult, setAnalysisResult] = useState('');
   const [analyzing, setAnalyzing] = useState(false);
   const [qaHistory, setQaHistory] = useState([]);
@@ -13,6 +16,23 @@ const ClassicalAnalysis = ({ content }) => {
   const [answering, setAnswering] = useState(false);
   const [showModelSelect, setShowModelSelect] = useState(false);
   const [selectedModel, setSelectedModel] = useState('xunzi-qwen2');
+  
+  // 从localStorage读取对话历史
+  useEffect(() => {
+    const savedHistory = localStorage.getItem(QA_HISTORY_KEY);
+    if (savedHistory) {
+      try {
+        setQaHistory(JSON.parse(savedHistory));
+      } catch (error) {
+        console.error('Failed to parse saved QA history:', error);
+      }
+    }
+  }, []);
+  
+  // 将对话历史保存到localStorage
+  useEffect(() => {
+    localStorage.setItem(QA_HISTORY_KEY, JSON.stringify(qaHistory));
+  }, [qaHistory]);
 
   const models = aiService.getAvailableModels();
 
