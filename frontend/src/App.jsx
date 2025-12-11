@@ -86,7 +86,7 @@ const ProtectedRoute = () => {
     );
   }
   
-  return isLoggedIn ? <Layout /> : <Navigate to="/login" />;
+  return isLoggedIn ? <Outlet /> : <Navigate to="/login" />;
 };
 
 // 公开路由组件（已登录用户不能访问）
@@ -127,33 +127,37 @@ function App() {
                 </PublicRoute>
               } 
             />
-            {/* 受保护路由使用嵌套结构 */}
+            {/* 受保护路由使用嵌套结构，结合Layout组件 */}
             <Route element={<ProtectedRoute />}>
-              <Route 
-                path="/dashboard" 
-                element={<Dashboard />} 
-              />
-              <Route 
-                path="/" 
-                element={<Navigate to="/dashboard" />} 
-              />
-              {/* 添加 Editor 路由 */}
-              <Route 
-                path="/editor" 
-                element={<Editor />} 
-              />
-              {/* 添加可视化路由 */}
-              <Route 
-                path="/visualization" 
-                element={<DataVisualization />} 
-              />
-              {/* 添加项目级可视化路由 */}
-              <Route 
-                path="/project-visualization" 
-                element={<ProjectVisualization />} 
-              />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/settings" element={<Settings />} />  
+              <Route element={<Layout />}>
+                <Route 
+                  path="/dashboard" 
+                  element={<Dashboard />} 
+                />
+                <Route 
+                  path="/" 
+                  element={<Navigate to="/dashboard" />} 
+                />
+                {/* 添加 Editor 路由 */}
+                <Route 
+                  path="/editor" 
+                  element={<Editor />} 
+                />
+                {/* 添加可视化路由 */}
+                <Route 
+                  path="/visualization" 
+                  element={<DataVisualization />} 
+                />
+                {/* 添加项目级可视化路由 */}
+                <Route 
+                  path="/project-visualization" 
+                  element={<ProjectVisualization />} 
+                />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/projects" element={<Dashboard />} />
+                <Route path="/project/:id" element={<Dashboard />} />
+              </Route>
             </Route>
             {/* 404 页面 */}
             <Route 
