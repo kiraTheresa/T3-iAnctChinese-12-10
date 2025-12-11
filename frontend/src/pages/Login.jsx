@@ -55,7 +55,6 @@ const Login = () => {
   };
 
   const handleSubmit = async () => {
-    setError('');
     setLoading(true);
 
     // 表单验证
