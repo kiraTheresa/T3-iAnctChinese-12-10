@@ -994,6 +994,7 @@ const Editor = ({ document: doc, project, onBack, onSave }) => {
             onAddRelation={handleAddRelation}
             onDeleteRelation={handleDeleteRelation}
             readOnly={readOnly}
+            content={content}
           />
         );
       case 'analysis':
