@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { t } from '../../utils/language';
 import '../../styles/components/Header.css';
 
-const Header = ({ showEditorButtons = false, onSaveDocument, onBackToProject, onShowUserProfile }) => {
+const Header = ({ showEditorButtons = false, onSaveDocument, onBackToProject, onShowUserProfile, toggleSidebar }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -31,6 +31,16 @@ const Header = ({ showEditorButtons = false, onSaveDocument, onBackToProject, on
     <header className="header">
       <div className="header-container">
         <div className="header-title-container">
+          {toggleSidebar && (
+            <button 
+              type="button" 
+              className="header-toggle-sidebar"
+              onClick={toggleSidebar}
+              aria-label="Toggle Sidebar"
+            >
+              <span className="toggle-icon">☰</span>
+            </button>
+          )}
           <div className="header-title" onClick={() => navigate('/dashboard')}>
             {t('header_title')}
           </div>

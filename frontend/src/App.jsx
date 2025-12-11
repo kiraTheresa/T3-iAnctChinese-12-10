@@ -11,8 +11,6 @@ import Settings from './pages/Settings.jsx';
 import DataVisualization from './components/visualization/DataVisualization.jsx';
 import ProjectVisualization from './components/visualization/ProjectVisualization.jsx';
 import { ToastContainer } from './components/common/Toast.jsx';
-import Header from './components/common/Header.jsx';
-import Sidebar from './components/common/Sidebar.jsx';
 import './App.css';
 
 
@@ -58,20 +56,8 @@ const ToastManager = () => {
   return <ToastContainer toasts={toasts} removeToast={removeToast} />;
 };
 
-// 主布局组件
-const Layout = () => {
-  return (
-    <div className="app-layout">
-      <Header />
-      <div className="app-content">
-        <Sidebar />
-        <main className="main-content">
-          <Outlet />
-        </main>
-      </div>
-    </div>
-  );
-};
+// 导入外部Layout组件
+import Layout from './components/common/Layout.jsx';
 
 // 保护路由组件
 const ProtectedRoute = () => {

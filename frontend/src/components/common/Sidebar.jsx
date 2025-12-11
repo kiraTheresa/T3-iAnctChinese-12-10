@@ -5,11 +5,10 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { t } from '../../utils/language';
 import '../../styles/components/Sidebar.css';
 
-const Sidebar = () => {
+const Sidebar = ({ isCollapsed, toggleSidebar }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedMenu, setExpandedMenu] = useState(null);
 
   // 模拟项目数据
