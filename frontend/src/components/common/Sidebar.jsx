@@ -47,10 +47,6 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
     navigate(path);
   };
 
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
-
   const toggleSubMenu = (menuName) => {
     setExpandedMenu(expandedMenu === menuName ? null : menuName);
   };
