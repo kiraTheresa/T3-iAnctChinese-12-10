@@ -1,41 +1,71 @@
 // src/components/common/Sidebar.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useProjects } from '../../hooks/useProjects';
 import { t } from '../../utils/language';
+import { 
+  Home, 
+  FileText, 
+  Edit, 
+  BarChart2, 
+  User, 
+  Settings,
+  ChevronsDown,
+  ChevronsRight
+} from 'react-feather';
 import '../../styles/components/Sidebar.css';
 
 const Sidebar = ({ isCollapsed, toggleSidebar }) => {
   const { user } = useAuth();
+  const { projects, loading } = useProjects();
   const navigate = useNavigate();
   const location = useLocation();
   const [expandedMenu, setExpandedMenu] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  // 模拟项目数据
-  const mockProjects = [
-    { id: 1, name: '项目1', path: '/project/1' },
-    { id: 2, name: '项目2', path: '/project/2' },
-    { id: 3, name: '项目3', path: '/project/3' }
-  ];
+  // 从localStorage加载侧边栏状态
+  useEffect(() => {
+    const savedState = localStorage.getItem('sidebarState');
+    if (savedState) {
+      setIsSidebarOpen(JSON.parse(savedState));
+    }
+  }, []);
+
+  // 保存侧边栏状态到localStorage
+  useEffect(() => {
+    localStorage.setItem('sidebarState', JSON.stringify(!isCollapsed));
+  }, [isCollapsed]);
+
+  // 生成实际项目列表
+  const projectItems = projects.map(project => ({
+    id: project.id,
+    name: project.name,
+    path: `/project/${project.id}`
+  }));
 
   // 导航菜单数据
   const navItems = [
-    { name: 'dashboard', label: '仪表盘', path: '/dashboard' },
+    { name: 'dashboard', label: '仪表盘', path: '/dashboard', icon: Home },
     { 
       name: 'projects', 
       label: '项目', 
       path: '/projects',
       hasChildren: true,
-      children: mockProjects
+      children: projectItems,
+      icon: FileText
     },
-    { name: 'visualization', label: '可视化', path: '/visualization' },
-    { name: 'profile', label: '个人资料', path: '/profile' },
-    { name: 'settings', label: '设置', path: '/settings' }
+    { name: 'editor', label: '编辑器', path: '/editor', icon: Edit },
+    { name: 'visualization', label: '可视化', path: '/visualization', icon: BarChart2 },
+    { name: 'profile', label: '个人资料', path: '/profile', icon: User },
+    { name: 'settings', label: '设置', path: '/settings', icon: Settings }
   ];
 
-  // 检查当前页面是否匹配导航项
+  // 检查当前页面是否匹配导航项（支持子路由）
   const isActive = (path) => {
-    return location.pathname === path;
+    // 完全匹配或子路由匹配
+    return location.pathname === path || 
+           (location.pathname.startsWith(path + '/') && path !== '/');
   };
 
   // 检查子菜单是否有激活项
@@ -87,12 +117,13 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
                   }
                 }}
               >
+                <item.icon size={18} className="nav-item-icon" />
                 {item.hasChildren ? (
                   <span className={`nav-item-arrow ${expandedMenu === item.name ? 'expanded' : ''}`}>
-                    {expandedMenu === item.name ? '▼' : '▶'}
+                    {expandedMenu === item.name ? <ChevronsDown size={14} /> : <ChevronsRight size={14} />}
                   </span>
                 ) : (
-                  <span className="nav-item-arrow">•</span>
+                  <span className="nav-item-arrow"></span>
                 )}
                 <span className="nav-item-label">{item.label}</span>
               </button>
@@ -100,21 +131,33 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               {/* 子菜单 */}
               {item.hasChildren && expandedMenu === item.name && !isCollapsed && (
                 <ul className="sidebar-subnav-list">
-                  {item.children.map((child) => (
-                    <li 
-                      key={child.id} 
-                      className={`sidebar-subnav-item ${isActive(child.path) ? 'active' : ''}`}
-                    >
-                      <button 
+                  {item.name === 'projects' && loading ? (
+                    <li className="sidebar-subnav-item loading">
+                      <span className="nav-item-arrow">•</span>
+                      <span className="nav-item-label">加载中...</span>
+                    </li>
+                  ) : item.children.length === 0 ? (
+                    <li className="sidebar-subnav-item empty">
+                      <span className="nav-item-arrow">•</span>
+                      <span className="nav-item-label">暂无项目</span>
+                    </li>
+                  ) : (
+                    item.children.map((child) => (
+                      <li 
+                        key={child.id} 
+                        className={`sidebar-subnav-item ${isActive(child.path) ? 'active' : ''}`}
+                      >
+                        <button 
                         type="button" 
                         className="sidebar-subnav-link"
                         onClick={() => handleNavigation(child.path)}
                       >
-                        <span className="nav-item-arrow">•</span>
+                        <FileText size={16} className="nav-item-icon subnav-icon" />
                         <span className="nav-item-label">{child.name}</span>
                       </button>
-                    </li>
-                  ))}
+                      </li>
+                    ))
+                  )}
                 </ul>
               )}
             </li>
