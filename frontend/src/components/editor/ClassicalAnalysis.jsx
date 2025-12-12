@@ -5,14 +5,12 @@ import { aiService } from '../../services/aiService';
 import Modal from '../common/Modal';
 import '../../styles/components/ClassicalAnalysis.css';
 
-const ClassicalAnalysis = ({ content }) => {
-  // 根据content生成唯一的localStorage键名
+const ClassicalAnalysis = ({ content, documentId }) => {
+  // 根据documentId生成唯一的localStorage键名
   const getUniqueKey = (baseKey) => {
-    // 使用content的哈希值作为唯一标识
-    const contentHash = content.trim() ? Array.from(content.trim()).reduce((hash, char) => {
-      return char.charCodeAt(0) + ((hash << 5) - hash);
-    }, 0).toString() : 'empty';
-    return `${baseKey}_${contentHash}`;
+    // 使用documentId作为唯一标识
+    const uniqueId = documentId || 'empty';
+    return `${baseKey}_${uniqueId}`;
   };
   
   const [analysisResult, setAnalysisResult] = useState('');

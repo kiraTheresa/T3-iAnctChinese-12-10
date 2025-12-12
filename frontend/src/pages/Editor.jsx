@@ -998,7 +998,7 @@ const Editor = ({ document: doc, project, onBack, onSave }) => {
           />
         );
       case 'analysis':
-        return <ClassicalAnalysis content={content} />;
+        return <ClassicalAnalysis content={content} documentId={doc.id} />;
       default:
         return null;
     }
