@@ -77,15 +77,15 @@ const authenticatedRequest = async (url, options = {}) => {
   let finalUrl = url;
   let body = options.body;
 
-  // 如果是 GET 请求，添加 userId 到查询参数
-  const isGetRequest = !options.method || options.method === 'GET';
-  if (isGetRequest && userId) {
+  // 如果是 GET 或 DELETE 请求，添加 userId 到查询参数
+  const isGetOrDeleteRequest = !options.method || options.method === 'GET' || options.method === 'DELETE';
+  if (isGetOrDeleteRequest && userId) {
     const separator = finalUrl.includes('?') ? '&' : '?';
     finalUrl = `${finalUrl}${separator}userId=${userId}`;
   }
 
   // 如果是 POST/PUT/PATCH 请求，添加 userId 到请求体
-  if (!isGetRequest && body && typeof body === 'object' && userId) {
+  if (!isGetOrDeleteRequest && body && typeof body === 'object' && userId) {
     body = { ...body, userId };
   }
 
